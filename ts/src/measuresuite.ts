@@ -32,7 +32,6 @@ export const native_ms = {
   load_asm_string: ms.load_asm_string,
   load_asm_file: ms.load_asm_file,
   load_bin_file: ms.load_bin_file,
-  load_elf_file: ms.load_elf_file,
   load_shared_object_file: ms.load_shared_object_file,
 
   unload_all: ms.unload_all,
@@ -92,7 +91,6 @@ export class Measuresuite {
     }
 
     // initializing the load's
-    this.ft2load.set("ELF", ms.load_elf_file);
     this.ft2load.set("ASM", ms.load_asm_file);
     this.ft2load.set("BIN", ms.load_bin_file);
     this.ft2load.set("SHARED_OBJECT", ms.load_shared_object_file);
@@ -117,8 +115,6 @@ export class Measuresuite {
   private ft2load = new Map<FunctionType, (filename: string, symbol: string) => void>();
 
   private ext2FT: { [ext: string]: FunctionType } = {
-    o: "ELF",
-    elf: "ELF",
     so: "SHARED_OBJECT",
     bin: "BIN",
     asm: "ASM",

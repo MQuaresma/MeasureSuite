@@ -18,7 +18,9 @@
 #include "assert.h"
 #include "debug.h"
 #include "measuresuite.h"
+#ifdef __linux__
 #include <linux/perf_event.h> // PERF_*
+#endif
 #include <stdio.h>            // NULL
 #include <string.h>           // memset
 #include <sys/ioctl.h>        // ioctl
@@ -28,6 +30,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#ifdef __linux__
 static int get_fdperf(volatile struct perf_event_attr *attr) {
 
   const pid_t pid = 0;
@@ -159,6 +162,8 @@ static uint64_t measuresuite_time_pmc(struct measuresuite *ms) {
 #endif
 }
 
+#endif
+
 uint64_t current_timestamp() {
   struct timeval time = {0};
   gettimeofday(&time, NULL); // get current time
@@ -171,6 +176,7 @@ uint64_t current_timestamp() {
 
   return milliseconds;
 }
+
 
 // NOLINTNEXTLINE (the inlineasm is not analyzed with clang tidy)
 static uint64_t measuresuite_time_rdtscp() {
@@ -197,6 +203,7 @@ int init_timer(struct measuresuite *ms) {
   memset(&ms->timer, 0, sizeof(ms->timer));
 
   // try to initialize
+	#ifdef __linux__
   init_fdperf(ms);
 
   if (ms->timer.fdperf == -1) {
@@ -206,10 +213,15 @@ int init_timer(struct measuresuite *ms) {
     // otherwise we'd use pmc
     ms->timer.timer_function = measuresuite_time_pmc;
   }
+  #elif defined(__APPLE__)
+	// no perf in apple so default to RDTSCP
+	ms->timer.timer_function = measuresuite_time_rdtscp;
+	#endif
 
   return 0;
 }
 
+#ifdef __linux__
 /**
  * This function checks if we used PMC and will then free the mmapped region
  */
@@ -240,6 +252,21 @@ void start_timer(struct measuresuite *ms, uint64_t *start) {
   }
   *start = ms->timer.timer_function(ms);
 }
+
+#elif defined(__APPLE__)
+
+int end_timer(struct measuresuite *ms) {
+	//we always use RDTSCP in Apple but sanity check
+  if (ms_get_timer(ms) == RDTSCP) {
+    return 0;
+  }
+}
+
+void start_timer(struct measuresuite *ms, uint64_t *start) {
+  *start = ms->timer.timer_function(ms);
+}
+
+#endif
 
 uint64_t stop_timer(struct measuresuite *ms, uint64_t start) {
 

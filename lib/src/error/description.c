@@ -52,10 +52,6 @@ static struct error_desc {
     {E_LOAD__ASM_DATA, "Cannot load ASM_DATA."},
     {E_LOAD__SO_FILE, "Cannot load Shared object file."},
     {E_LOAD__AL_FREE, "Cannot unload Assemblyline. Maybe is has been unloaded alraedy."},
-    {E_LOAD__ELF_FILE_IO, "An File I/O error occurred while loading the ELF file."},
-    {E_LOAD__ELF_FILE_INVALID_ELF, "The ELF file does not have the expected format."},
-    {E_LOAD__ELF_MEM_INVALID_ELF, "The ELF file (memory) does not have the expected format."},
-    {E_LOAD__ELF_FILE_MALLOC, "An allocation error occurred while loading the ELF file."},
     {E_NO_ASSEMBLYLINE, "Cannot use ASM files, because MeasureSuite was compiles without it. Install AssemblyLine and recompile, or assemble yourself and load object file."}
     // clang-format on
 };

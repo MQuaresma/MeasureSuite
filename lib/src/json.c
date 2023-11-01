@@ -39,7 +39,7 @@ int generate_json(struct measuresuite *ms, uint64_t delta_in_seconds,
         "{"
         "\"numFunctions\":%" PRIu64 ","
         "\"runtime\":%" PRIu64 "," // in seconds
-        "\"incorrect\":%" PRIu64
+        "\"incorrect\":%" PRIu32
         "," // index
             // if incorrect is '0', all functions calculate the same, otherwise
             // the index of which function is incorrect to the previous one.
@@ -62,9 +62,6 @@ int generate_json(struct measuresuite *ms, uint64_t delta_in_seconds,
       break;
     case BIN:
       PRINT("{\"type\":\"BIN\"},");
-      break;
-    case ELF:
-      PRINT("{\"type\":\"ELF\"},");
       break;
     case SHARED_OBJECT:
       PRINT("{\"type\":\"SHARED_OBJECT\"},");

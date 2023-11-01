@@ -23,7 +23,6 @@
 static const char symbol[] = {"add_two_numbers"};
 static const char file_asm[] = {"./test_data/add_two_numbers.asm"};
 static const char file_bin[] = {"./test_data/add_two_numbers.bin"};
-static const char file_elf[] = {"./test_data/add_two_numbers.o"};
 static const char file_shared_object[] = {"./test_data/add_two_numbers.so"};
 
 static const int arg_width = 1;
@@ -62,21 +61,6 @@ static int test_measure_bin_ok() {
   return 0;
 }
 
-static int test_measure_elf_ok() {
-
-  measuresuite_t ms = NULL;
-
-  int id = -1;
-  ms_initialize(&ms, arg_width, arg_num_in, arg_num_out);
-
-  ms_load_file(ms, ELF, file_elf, symbol, &id);
-  ms_assert_ok(ms_measure(ms, batch_size, number_of_batches));
-
-  ms_assert_ok(ms_terminate(ms));
-
-  return 0;
-}
-
 static int test_measure_shared_object_ok() {
 
   measuresuite_t ms = NULL;
@@ -100,7 +84,6 @@ int main() {
   res |= test_measure_asm_ok();
 #endif
   res |= test_measure_bin_ok();
-  res |= test_measure_elf_ok();
   res |= test_measure_shared_object_ok();
   return res;
 }

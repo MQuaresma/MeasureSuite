@@ -51,6 +51,9 @@ int check_ise_bit(int bit_no);
 // the cpuid trick does not work (reliably) on the GH-CI. So we will need to use
 // the SIGILL handler. Which needs a pointer to a function.
 #include <assert.h> // __ASSERT_FUNCTION
+#ifdef __APPLE__
+#define __ASSERT_FUNCTION "assert"
+#endif
 #include <signal.h> //  sigaction
 #include <stdlib.h>
 

@@ -12,6 +12,8 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
+OS = $(shell uname -s)
+
 # Files / Directories
 SRCS        = $(shell find ./src -type f -name '*.c')
 UTEST_SRCS  = $(wildcard ./test/unit/*.c)
@@ -20,7 +22,7 @@ TEST_SRCS   = $(UTEST_SRCS) $(ITEST_SRCS)
 TESTS      ?= $(TEST_SRCS:.c=.tst)
 C_COV_DIR   = coverage
 
-CFLAGS     ?= -O2 -Wall -Wextra -Werror -std=c17
+CFLAGS     ?= -O2 -Wall -Wextra -std=c17 # -Werror
 CPPFLAGS   += -I./src/ -I./src/include
 LDLIBS     += -ldl
 
@@ -36,18 +38,16 @@ ifneq ($(DEBUG), 0)
 CFLAGS += -g -DENABLE_DEBUG
 endif
 
-
-
 .PHONY: all check test report clean deepclean
 
-.PRECIOUS: libmeasuresuite.so libmeasuresuite.a
+o.PRECIOUS: libmeasuresuite.so libmeasuresuite.a
 
 all: libmeasuresuite.so libmeasuresuite.a
 check: test report
 
 test: cleantest test_data
-test: CFLAGS+= -g -Wall -Wextra -Werror --coverage 
-test: LDLIBS+= -L. -lmeasuresuite
+test: CFLAGS+= -g -Wall -Wextra -Werror --coverage
+test: LDLIBS+= -L$(PWD)/lib -lmeasuresuite
 test: $(TESTS) Makefile
 
 report:
@@ -64,15 +64,31 @@ libmeasuresuite.a: $(SRCS:c=o)
 
 libmeasuresuite.so: $(SRCS:c=o)
 	$(CC) $(CFLAGS) $(^) $(LDLIBS) -shared -fpie -o $(@)
+ifeq ($(OS),Darwin)
+	codesign --sign "${IDENTITY}" \
+           --entitlements entitleme.plist \
+           "$(@)" \
+           --force \
+           --options runtime;
+endif
 
 test/%.tst: test/%.c Makefile test/helper.o libmeasuresuite.so
 	@$(CC) $(CFLAGS) -Wno-unused-const-variable -Wno-unused-function $(<) $(CPPFLAGS) test/helper.o $(LDLIBS) -I./test -o $(@)
+ifeq ($(OS),Darwin)
+	codesign --display \
+           --verbose=3 \
+           --sign "${IDENTITY}" \
+           --entitlements entitleme.plist \
+           "$(@)" \
+           --force \
+           --options runtime;
+endif
 	@./test/wrapper.sh $(@)
 	@rm $(@)
 
 clean: cleantest
 	rm -rf $(C_COV_DIR)
-	find . -type f \( -name "*.gcda" -o -name "*.gcno" -o -name "*.a" -o -name "*.o" -o -name "*.so" -o -name "*.html" \) -delete
+	find . -type f \( -name "*.dSYM" -name "*.gcda" -o -name "*.gcno" -o -name "*.a" -o -name "*.o" -o -name "*.so" -o -name "*.html" \) -delete
 
 test_data:
 	$(MAKE) -C ./test/test_data

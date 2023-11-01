@@ -23,7 +23,6 @@
 static const char symbol[] = {"add_two_numbers"};
 static const char file_asm[] = {"./test_data/add_two_numbers.asm"};
 static const char file_bin[] = {"./test_data/add_two_numbers.bin"};
-static const char file_elf[] = {"./test_data/add_two_numbers.o"};
 static const char file_shared_object[] = {"./test_data/add_two_numbers.so"};
 static const int arg_width = 1;
 static const int arg_num_in = 2;
@@ -92,24 +91,6 @@ static int test_load_bin_ok() {
   return 0;
 }
 
-static int test_load_elf_ok() {
-
-  measuresuite_t ms = NULL;
-
-  ms_initialize(&ms, arg_width, arg_num_in, arg_num_out);
-
-  int id = -1;
-  ms_assert_ok(ms_load_file(ms, ELF, file_elf, symbol, &id));
-  ms_assert(id == 0);
-
-  // should not error out if the symbol is NULL
-  ms_assert_ok(ms_load_file(ms, ELF, file_elf, NULL, &id));
-  ms_assert(id == 0); // should not have changed
-
-  ms_assert_ok(ms_terminate(ms));
-
-  return 0;
-}
 
 static int test_load_shared_object_ok() {
 
@@ -135,7 +116,6 @@ int main() {
   res |= test_load_asm_ok();
   res |= test_load_asm2_ok();
   res |= test_load_bin_ok();
-  res |= test_load_elf_ok();
   res |= test_load_shared_object_ok();
   return res;
 #else

@@ -21,7 +21,6 @@
 napi_value load_asm_string(napi_env env, napi_callback_info info);
 napi_value load_asm_file(napi_env env, napi_callback_info info);
 napi_value load_bin_file(napi_env env, napi_callback_info info);
-napi_value load_elf_file(napi_env env, napi_callback_info info);
 napi_value load_shared_object_file(napi_env env, napi_callback_info info);
 
 napi_value unload_all(napi_env env, napi_callback_info info);

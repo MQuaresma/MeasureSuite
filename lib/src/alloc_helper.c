@@ -43,15 +43,21 @@ int realloc_or_fail(struct measuresuite *ms, void **dest, size_t new_len) {
 int map_rwx(struct measuresuite *ms, void **dest, size_t new_len) {
   int fd_zero = open("/dev/zero", O_RDWR);
   if (fd_zero == -1) {
+		DEBUG("Failed opening /dev/zero");
     ms->errorno = E_INTERNAL_MEASURE__AI__ALLOC;
     ms->additional_info = strerror(errno);
     return 1;
   }
 
-  *dest = mmap(NULL, new_len, PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE,
+  *dest = mmap(NULL, new_len, PROT_READ | PROT_EXEC,
+							 #ifdef __APPLE__
+							 MAP_JIT |
+               #endif
+							 MAP_PRIVATE,
                fd_zero, 0);
   // NOLINTNEXTLINE
   if (*dest == MAP_FAILED) {
+		DEBUG("Failed mapping memory");
     ms->errorno = E_INTERNAL_MEASURE__AI__ALLOC;
     ms->additional_info = strerror(errno);
     return 1;

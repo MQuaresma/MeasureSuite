@@ -19,7 +19,11 @@
 
 #include "error/error.h"  // ERROR_NUMBER
 #include "measuresuite.h" // load_type
+
+#ifdef __linux__
 #include <linux/perf_event.h>
+#endif
+
 #include <stddef.h>
 #include <stdint.h>
 
@@ -105,8 +109,10 @@ struct measuresuite {
 
   // timer
   struct timer_t {
+		#ifdef __linux__
     int fdperf;
     struct perf_event_mmap_page *buf;
+		#endif
     uint64_t (*timer_function)(struct measuresuite *ms);
   } timer;
 };

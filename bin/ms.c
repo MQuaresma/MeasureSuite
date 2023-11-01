@@ -91,11 +91,6 @@ static int load(measuresuite_t ms, const char *filename, char *sym) {
     valid = 1;
   }
 
-  if (strcmp(dot, "o") == 0) {
-    type = ELF;
-    valid = 1;
-  }
-
   if (!valid) {
     fprintf(stderr, "File >>%s<<must have a valid extention.\n", filename);
     return -1;

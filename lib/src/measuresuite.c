@@ -115,7 +115,7 @@ void ms_get_json(measuresuite_t ms, const char **json, size_t *json_len) {
   *json_len = strlen(*json);
 }
 
-int ms_get_cycles(measuresuite_t ms, size_t **dest, size_t idx) {
+int ms_get_cycles(measuresuite_t ms, uint64_t **dest, size_t idx) {
   if (idx >= ms->num_functions) {
     ms->errorno = E_INVALID_INPUT__NUM_IDX_OOB;
     return 1;
@@ -125,10 +125,14 @@ int ms_get_cycles(measuresuite_t ms, size_t **dest, size_t idx) {
 }
 
 enum TIMER ms_get_timer(measuresuite_t ms) {
+#ifdef __linux__
   if (ms->timer.fdperf == -1) {
     return RDTSCP;
   }
   return PMC;
+#elif defined(__APPLE__)
+	return RDTSCP;
+#endif
 }
 
 /**

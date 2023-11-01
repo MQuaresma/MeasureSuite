@@ -18,7 +18,9 @@
 #include "error/error.h"
 #include <errno.h> //errno
 #include <fcntl.h> // open/close
+#ifdef __linux__
 #include <linux/perf_event.h>
+#endif
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>

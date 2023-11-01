@@ -33,7 +33,7 @@ int so_load_file(struct measuresuite *ms, struct function_tuple *fct,
   dlerror();
 
   // open
-  fct->lib_handle = dlopen(filename, RTLD_NOW | RTLD_LOCAL);
+  fct->lib_handle = dlopen(filename, RTLD_FIRST | RTLD_NOW | RTLD_LOCAL);
 
   // check
   if (fct->lib_handle == NULL) {

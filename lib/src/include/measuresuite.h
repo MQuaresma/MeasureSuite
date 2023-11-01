@@ -70,7 +70,7 @@ void ms_set_checking(measuresuite_t ms, int control);
  * Those load_types are used in ms_load_{file,data}. See the documentaion there
  * for explanation.
  */
-enum load_type { ASM, BIN, ELF, SHARED_OBJECT };
+enum load_type { ASM, BIN, SHARED_OBJECT };
 
 /**
  * Loads a function from a file.
@@ -92,14 +92,6 @@ enum load_type { ASM, BIN, ELF, SHARED_OBJECT };
  *
  * @param filename must be a path to a file containing machinecode (*.bin).
  * @param symbol is ignored.
- *
- *
- * load_type ELF
- *
- * @param filename must be a path to an elf-file (*.o).
- * The symbol table from it will be read.
- * If @param symbol is not NULL, the respective symbol is loaded.
- * Otherwise the first found symbol is loaded.
  *
  *
  * load_type SHARED_OBJECT
@@ -131,14 +123,6 @@ int ms_load_file(measuresuite_t ms, enum load_type type, const char *filename,
  * copied.
  * @param symbol is ignored.
  *
- *
- * load_type ELF
- *
- * @param data must constain an elf-file in memeory
- * The symbol table from it will be read.
- * If @param symbol is not NULL, the respective symbol is loaded.
- * Otherwise the first found symbol is loaded.
- * @param data_len is ignored.
  *
  * load_type SHARED_OBJECT
  * invalid. Use ms_load_file instead.

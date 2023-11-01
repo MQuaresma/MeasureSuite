@@ -26,7 +26,6 @@ describe("native_ms", () => {
       "load_asm_string",
       "load_asm_file",
       "load_bin_file",
-      "load_elf_file",
       "load_shared_object_file",
       "unload_all",
       "unload_last",

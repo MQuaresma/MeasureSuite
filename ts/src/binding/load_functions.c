@@ -156,63 +156,6 @@ napi_value load_bin_file(napi_env env, napi_callback_info info) {
   return napi_result;
 }
 
-napi_value load_elf_file(napi_env env, napi_callback_info info) {
-  // getting back the instance
-  void *instance_data = NULL;
-  if (napi_get_instance_data(env, &instance_data) != napi_ok) {
-    return throw_and_return_napi_val(env, "Unable to get instance data.");
-  }
-  measuresuite_t ms = (measuresuite_t)instance_data;
-
-  const size_t argc_init = 2;
-  size_t argc = argc_init;
-
-  napi_value argv[argc]; // holds the values
-
-  char elf_filename[max_len_paths];
-  char elf_symbol[max_len_symbol];
-
-  // parse all args
-  if (napi_get_cb_info(env, info, &argc, argv, NULL, NULL) != napi_ok)
-    return throw_and_return_napi_val(env, "Failed to parse arguments");
-
-  // parse filename
-  size_t read_bytes = 0;
-  if (napi_get_value_string_latin1(env, argv[0], elf_filename, max_len_paths,
-                                   &read_bytes) != napi_ok // read
-      || read_bytes == 0                 // none read err check
-      || read_bytes == max_len_paths - 1 // too long err check
-
-  ) {
-    return throw_and_return_napi_val(env,
-                                     "Invalid elf filename was passed as "
-                                     "argument 0, may have been too long.");
-  }
-
-  // parse symbol name
-  if (napi_get_value_string_latin1(env, argv[1], elf_symbol, max_len_symbol,
-                                   &read_bytes) != napi_ok // read
-      // may have been empty, which is ok
-      || read_bytes == max_len_symbol - 1 // too long err check
-
-  ) {
-    return throw_and_return_napi_val(env,
-                                     "Invalid elf symbol was passed as "
-                                     "argument 1, may have been too long.");
-  }
-
-  // load elf data in instance
-  int id_elf = -1;
-  if (ms_load_file(ms, ELF, elf_filename, read_bytes == 0 ? NULL : elf_symbol,
-                   &id_elf) != 0) {
-    ms_fprintf_error(ms, stderr);
-    return throw_and_return_napi_val(env, "Could not load elf file to MS.");
-  };
-
-  napi_value napi_result = NULL;
-  napi_create_int32(env, id_elf, &napi_result);
-  return napi_result;
-}
 
 napi_value load_shared_object_file(napi_env env, napi_callback_info info) {
   // getting back the instance

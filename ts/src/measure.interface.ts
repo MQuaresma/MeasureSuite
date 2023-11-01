@@ -49,14 +49,13 @@ export interface MeasureResult {
   cycles: number[][];
 }
 export type FunctionSummary =
-  | BaseSummary<"ELF">
   | BaseSummary<"BIN">
   | BaseSummary<"SHARED_OBJECT">
   | AsmFunctionSummary;
 
 export type AsmFunctionSummary = BaseSummary<"ASM"> & { chunks: number };
 
-export type FunctionType = "ASM" | "BIN" | "ELF" | "SHARED_OBJECT";
+export type FunctionType = "ASM" | "BIN" | "SHARED_OBJECT";
 
 interface BaseSummary<T extends FunctionType> {
   type: T;

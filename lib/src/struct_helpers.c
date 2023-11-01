@@ -96,8 +96,11 @@ measuresuite_t create_default_ms() {
   ms->random_data_fd = -1;
 
   // timer
+
+	#ifdef __linux__
   ms->timer.fdperf = -1;
   ms->timer.buf = NULL;
+	#endif
   ms->timer.timer_function = NULL;
 
   return ms;

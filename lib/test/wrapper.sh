@@ -39,7 +39,7 @@ fail() {
 pushd "test" >/dev/null || exit 2
 
 printf "\033[33m RUN  \033[0m%s" "${filename}"
-LD_LIBRARY_PATH=${libpath} "./${filename}" 2>"${err_filename}" 1>"${out_filename}"
+DYLD_FALLBACK_LIBRARY_PATH=${libpath} "./${filename}" 2>"${err_filename}" 1>"${out_filename}"
 
 case ${?} in
 0)

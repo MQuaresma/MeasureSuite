@@ -23,7 +23,6 @@
 static const char symbol[] = {"add_two_numbers"};
 static const char file_asm[] = {"./test_data/add_two_numbers.asm"};
 static const char file_bin[] = {"./test_data/add_two_numbers.bin"};
-static const char file_elf[] = {"./test_data/add_two_numbers.o"};
 static const char file_shared_object[] = {"./test_data/add_two_numbers.so"};
 static const int arg_width = 1;
 static const int arg_num_in = 2;
@@ -45,7 +44,6 @@ static int test_measure_four_ok() {
   ms_assert_ok(ms_load_file(ms, SHARED_OBJECT, file_shared_object, symbol,
                             ids + pointer++));
   ms_assert_ok(ms_load_file(ms, BIN, file_bin, symbol, ids + pointer++));
-  ms_assert_ok(ms_load_file(ms, ELF, file_elf, symbol, ids + pointer++));
 
   ms_assert_ok(ms_measure(ms, batch_size, number_of_batches));
 

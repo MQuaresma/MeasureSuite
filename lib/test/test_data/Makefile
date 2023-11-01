@@ -12,17 +12,17 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-TEST_DATA   = $(addprefix ./add_two_numbers., so bin o) liball.so
+TEST_DATA   = $(addprefix ./add_two_numbers., so bin) liball.so
 
 .PHONY: _all 
 
 _all: $(TEST_DATA)
 
 %.o: %.asm
-	nasm -felf64 $(<) -o $(@)
+	nasm -fmacho64 $(<) -o $(@)
 
-%.bin: %.o
-	objcopy ${<} --dump-section .text=${@}
+%.bin: %.asm
+	asmline $(<) -P $(@)	
 	# alternatively, using the asm file and AL: asmline $(<) -P $(@)
 
 %.so: %.o

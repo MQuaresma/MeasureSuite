@@ -19,7 +19,6 @@
 #include "alloc_helper.h"
 #include "debug.h"
 #include "error/error.h"
-#include "io/elf_parser.h"
 #include "io/file.h"
 #include "io/shared_object.h"
 #include "loader.h"
@@ -74,7 +73,7 @@ static int create_new_function(measuresuite_t ms, enum load_type type,
   init_arithmetic_results(ms, new);
 
   // if we need the 'code' segment, initialize that memory
-  if (type == ELF || type == BIN || type == ASM) {
+  if (type == BIN || type == ASM) {
 
     new->code_size_bytes =
         code_size_bytes == 0 ? DEFAULT_CODE_SIZE : code_size_bytes;
@@ -134,7 +133,6 @@ int unload(measuresuite_t ms, size_t id) {
     __attribute__((fallthrough));
 #endif
   case BIN:
-  case ELF:
     unmap(ms, fct->code, fct->code_size_bytes);
     fct->code_size_bytes = 0;
   }
@@ -177,7 +175,6 @@ int load_file(measuresuite_t ms, enum load_type type, const char *filename,
    - ASM, as a string instructions are typically longer than the encoded
    version
    - BIN (its equal anyway)
-   - ELF, as we'd need less because we skip the header stuff
    */
     if (create_new_function(ms, type, size)) {
       return 1;
@@ -210,9 +207,6 @@ int load_file(measuresuite_t ms, enum load_type type, const char *filename,
 
   case BIN:
     return filecopy(ms, fct->code, size, filename);
-
-  case ELF:
-    return elf_load_symbol(ms, fct->code, size, filename, symbol);
 
   default:
     return 1;
@@ -263,10 +257,6 @@ int load_data(measuresuite_t ms, enum load_type type, const uint8_t *data,
     memcpy(fct->code, data, data_len);
     return 0;
   }
-
-  case ELF:
-    return elf_load_symbol_mem(ms, fct->code, fct->code_size_bytes, data,
-                               symbol);
 
   default:
     return 1;

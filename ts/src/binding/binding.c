@@ -45,8 +45,6 @@ napi_value Init(napi_env env, napi_value exports) {
   register_function(env, exports, load_asm_file, "load_asm_file");
   // load_bin_file(path: string): number;
   register_function(env, exports, load_bin_file, "load_bin_file");
-  // load_elf_file(path: string, symbol?: string): number;
-  register_function(env, exports, load_elf_file, "load_elf_file");
   // load_shared_object_file(path: string, symbol: string): number;
   register_function(env, exports, load_shared_object_file,
                     "load_shared_object_file");
