@@ -14,7 +14,7 @@
 
 LIBDIR=../../lib/
 
-.PHONY: example-ts-asm
+.PHONY: example-ts-asm clean
 
 all: example-c-asm example-ts-asm
 
@@ -35,3 +35,9 @@ example-ts-asm: add_two_numbers.ts
 	npm i 
 	npm test
 	rm -f add_two_numbers.js
+
+clean:
+	rm -rf \
+		node_modules \
+		package-lock.json \
+
