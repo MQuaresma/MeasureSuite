@@ -51,6 +51,7 @@ clean:
 	rm -rf ms \
 		ts/coverage \
 		ts/dist \
+		ts/node_modules \
 		node_modules \
 		package-lock.json \
 		build
@@ -63,4 +64,4 @@ check: ms
 		./lib/test/test_data/add_two_numbers.asm \
 		./lib/test/test_data/add_two_numbers.bin \
 		./lib/test/test_data/liball.so && \
-		echo -e "\r\033[32m  OK\033[0m  "
+		printf "\r\033[32m  OK\033[0m  "

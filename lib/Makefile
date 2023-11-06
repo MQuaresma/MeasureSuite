@@ -72,7 +72,10 @@ test/%.tst: test/%.c Makefile test/helper.o libmeasuresuite.so
 
 clean: cleantest
 	rm -rf $(C_COV_DIR)
-	find . -type f \( -name "*.dSYM" -name "*.gcda" -o -name "*.gcno" -o -name "*.a" -o -name "*.o" -o -name "*.so" -o -name "*.html" \) -delete
+	find . -type f \( -name "*.gcda" -o -name "*.gcno" -o -name "*.a" -o -name "*.o" -o -name "*.so" -o -name "*.html" \) -delete
+ifeq ($(OS),Darwin)
+	rm -rf $$(find . -type d -name "*.dSYM")
+endif
 
 test_data:
 	$(MAKE) -C ./test/test_data
