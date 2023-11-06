@@ -57,33 +57,17 @@ report:
 	@genhtml -o $(C_COV_DIR) $(C_COV_DIR)/app.info
 
 %.o: %.c Makefile
-	$(CC) $(CFLAGS) $(CPPFLAGS) -fPIC -c $(<) -o $(@)  
+	$(CC) $(CFLAGS) $(CPPFLAGS) -fPIC -c $(<) -o $(@)
 
 libmeasuresuite.a: $(SRCS:c=o)
 	$(AR) rcs $(@) $(^)
 
 libmeasuresuite.so: $(SRCS:c=o)
 	$(CC) $(CFLAGS) $(^) $(LDLIBS) -shared -fpie -o $(@)
-ifeq ($(OS),Darwin)
-	codesign --sign "${IDENTITY}" \
-           --entitlements entitleme.plist \
-           "$(@)" \
-           --force \
-           --options runtime;
-endif
 
 test/%.tst: test/%.c Makefile test/helper.o libmeasuresuite.so
 	@$(CC) $(CFLAGS) -Wno-unused-const-variable -Wno-unused-function $(<) $(CPPFLAGS) test/helper.o $(LDLIBS) -I./test -o $(@)
-ifeq ($(OS),Darwin)
-	codesign --display \
-           --verbose=3 \
-           --sign "${IDENTITY}" \
-           --entitlements entitleme.plist \
-           "$(@)" \
-           --force \
-           --options runtime;
-endif
-	@./test/wrapper.sh $(@)
+	./test/wrapper.sh $(@)
 	@rm $(@)
 
 clean: cleantest

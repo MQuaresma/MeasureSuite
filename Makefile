@@ -51,6 +51,8 @@ clean:
 	rm -rf ms \
 		ts/coverage \
 		ts/dist \
+		node_modules \
+		package-lock.json \
 		build
 	$(MAKE) -C lib $(@)
 
@@ -60,5 +62,5 @@ check: ms
 		-s add_two_numbers \
 		./lib/test/test_data/add_two_numbers.asm \
 		./lib/test/test_data/add_two_numbers.bin \
-		./lib/test/test_data/add_two_numbers.so && \
+		./lib/test/test_data/liball.so && \
 		echo -e "\r\033[32m  OK\033[0m  "

@@ -24,14 +24,15 @@
       ],
       "include_dirs": [
         "./lib/src/include",
-        "./lib/src"
+        "./lib/src",
+        "/usr/local/include"
       ],
       "conditions": [
         [
           "<(hasAL)",
           {
             "defines": [
-              "USE_ASSEMBLYLINE"
+              "USE_ASSEMBLYLINE",
             ]
           }
         ]
@@ -51,7 +52,8 @@
       ],
       "include_dirs": [
         "./lib/src/include",
-        "./ts/src/binding"
+        "./ts/src/binding",
+        "/usr/local/include"
       ],
       "conditions": [
         [
