@@ -213,7 +213,7 @@ int init_timer(struct measuresuite *ms) {
     // otherwise we'd use pmc
     ms->timer.timer_function = measuresuite_time_pmc;
   }
-  #elif defined(__APPLE__)
+  #else
 	// no perf in apple so default to RDTSCP
 	ms->timer.timer_function = measuresuite_time_rdtscp;
 	#endif

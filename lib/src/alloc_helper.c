@@ -41,7 +41,15 @@ int realloc_or_fail(struct measuresuite *ms, void **dest, size_t new_len) {
 }
 
 int map_rwx(struct measuresuite *ms, void **dest, size_t new_len) {
+	int prot = PROT_READ | PROT_WRITE | PROT_EXEC;
+	int flags = 
+#ifdef __APPLE__
+		MAP_JIT | MAP_ANONYMOUS |
+#endif
+		MAP_PRIVATE;
+
   int fd_zero = open("/dev/zero", O_RDWR);
+
   if (fd_zero == -1) {
 		DEBUG("Failed opening /dev/zero");
     ms->errorno = E_INTERNAL_MEASURE__AI__ALLOC;
@@ -49,15 +57,17 @@ int map_rwx(struct measuresuite *ms, void **dest, size_t new_len) {
     return 1;
   }
 
-  *dest = mmap(NULL, new_len, PROT_READ | PROT_EXEC,
-							 #ifdef __APPLE__
-							 MAP_JIT |
-               #endif
-							 MAP_PRIVATE,
-               fd_zero, 0);
+  /*
+	 * Mapping doesn't work when swapping to /dev/zero in macOS when MS is executed
+	 * as a dependency in TS.
+	 * My guess is it has to do with the address range this is being mapped to, which
+	 * Darwin deems as not valid.
+	 * Thus we need to set the fd to -1, which prevents swapping
+	 */
+	*dest = mmap(NULL, new_len, prot, flags, -1, 0);
   // NOLINTNEXTLINE
   if (*dest == MAP_FAILED) {
-		DEBUG("Failed mapping memory");
+		DEBUG("Failed to map memory\n");
     ms->errorno = E_INTERNAL_MEASURE__AI__ALLOC;
     ms->additional_info = strerror(errno);
     return 1;
