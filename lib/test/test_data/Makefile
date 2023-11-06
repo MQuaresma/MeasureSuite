@@ -14,12 +14,18 @@
 
 TEST_DATA   = $(addprefix ./add_two_numbers., so bin) liball.so
 
+OS = $(shell uname -s)
+
 .PHONY: _all 
 
 _all: $(TEST_DATA)
 
 %.o: %.asm
+ifeq ($(OS),Darwin)
 	nasm -fmacho64 $(<) -o $(@)
+else
+	nasm -felf64 $(<) -o $(@)
+endif
 
 %.bin: %.asm
 	asmline $(<) -P $(@)	
