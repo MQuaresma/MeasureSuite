@@ -19,7 +19,8 @@
 #include <node/js_native_api.h>
 #include <stddef.h>
 #include <stdint.h>
-void init(napi_env env, napi_callback_info info) {
+
+napi_value init(napi_env env, napi_callback_info info) {
   const size_t argc_init = 3;
   size_t argc = argc_init;
 
@@ -32,38 +33,44 @@ void init(napi_env env, napi_callback_info info) {
 
   // parse all args
   if (napi_get_cb_info(env, info, &argc, argv, NULL, NULL) != napi_ok)
-    return throw_error_return_void(env, "Failed to parse arguments");
+    return throw_and_return_napi_val(env, "Failed to parse arguments");
 
   // parse arg_widths
   if (napi_get_value_int32(env, *cur_napi++, &arg_width) != napi_ok)
-    return throw_error_return_void(
+    return throw_and_return_napi_val(
         env, "Invalid arg_width was passed as argument 0");
 
   // parse num_args_in
   if (napi_get_value_int32(env, *cur_napi++, &num_arg_in) != napi_ok)
-    return throw_error_return_void(
+    return throw_and_return_napi_val(
         env, "Invalid num_arg_in was passed as argument 1");
 
   // parse num_args_out
   if (napi_get_value_int32(env, *cur_napi++, &num_arg_out) != napi_ok)
-    return throw_error_return_void(
+    return throw_and_return_napi_val(
         env, "Invalid num_arg_out was passed as argument 2");
 
   // execute measure_init
   measuresuite_t ms = NULL;
+
   if (ms_initialize(&ms, arg_width, num_arg_in, num_arg_out) != 0) {
     ms_fprintf_error(ms, stderr);
-    return throw_error_return_void(env,
+    return throw_and_return_napi_val(env,
                                    "Unable to create measuresuite instance.");
   }
 
   // save the measuresuite_t handle in as the instance data. and set the
   // finalise callback to call ms_teminate
   if (napi_set_instance_data(env, ms, &finalise, NULL) != napi_ok) {
-    return throw_error_return_void(
+    return throw_and_return_napi_val(
         env, "Unable to set instance data / finalize_cb.");
   }
+
+  napi_value napi_result = NULL;
+  napi_create_int32(env, 0, &napi_result);
+  return napi_result;
 }
+
 napi_value destroy(napi_env env, napi_callback_info info) {
   void *instance_data = NULL;
   if (napi_get_instance_data(env, &instance_data) != napi_ok) {
