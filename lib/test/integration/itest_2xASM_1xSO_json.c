@@ -22,7 +22,7 @@
 
 static const char symbol[] = {"add_two_numbers"};
 static const char file_asm[] = {"./test_data/add_two_numbers.asm"};
-static const char file_shared_object[] = {"./test_data/add_two_numbers.so"};
+static const char file_shared_object[] = {"./test_data/liball.so"};
 static const int arg_width = 1;
 static const int arg_num_in = 2;
 static const int arg_num_out = 1;
@@ -37,9 +37,9 @@ static int test_measure_load_check_ok() {
   int pointer = 0;
   ms_assert_ok(ms_initialize(&ms, arg_width, arg_num_in, arg_num_out));
 
-  /* /\** 1x so *\/ */
-  /* ms_assert_ok(ms_load_file(ms, SHARED_OBJECT, file_shared_object, symbol, */
-  /*                           ids + pointer++)); */
+  /** 1x so */
+  ms_assert_ok(ms_load_file(ms, SHARED_OBJECT, file_shared_object, symbol,
+                            ids + pointer++));
 
   /** 1x asm */
   ms_assert_ok(ms_load_file(ms, ASM, file_asm, symbol, ids + pointer++));

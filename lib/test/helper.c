@@ -61,6 +61,7 @@ void assert_print_ms_error(measuresuite_t ms, char *file, int lineno,
   }
   fprintf(stderr, "%s:%d: %s: Assertion %s failed.\n (ms-error: %s)\n", file,
           lineno, func, s_exp, ms_get_error_string(ms));
+	ms_fprintf_error(ms, stderr);
   abort();
 }
 void assert_string_in_json(measuresuite_t ms, const char *needle) {
