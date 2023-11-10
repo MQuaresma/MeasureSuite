@@ -25,7 +25,6 @@
       "include_dirs": [
         "./lib/src/include",
         "./lib/src",
-        "/usr/local/include"
       ],
       "conditions": [
         [
@@ -35,7 +34,16 @@
               "USE_ASSEMBLYLINE",
             ]
           }
+        ],
+        [
+          'OS=="mac"',
+          {
+            "include_dirs": [
+              "/usr/local/include"
+            ]
+          }
         ]
+
       ]
     },
     {
@@ -53,7 +61,6 @@
       "include_dirs": [
         "./lib/src/include",
         "./ts/src/binding",
-        "/usr/local/include"
       ],
       "conditions": [
         [
@@ -61,6 +68,14 @@
           {
             "libraries": [
               "<!(pkg-config --libs assemblyline)"
+            ]
+          }
+        ],
+        [
+          'OS=="mac"',
+          {
+            "include_dirs": [
+              "/usr/local/include"
             ]
           }
         ]
